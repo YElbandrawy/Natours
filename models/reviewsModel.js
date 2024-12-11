@@ -59,7 +59,7 @@ reviewSchema.statics.updateRatingsInfo = async function (tourId) {
   if (stats.length > 0) {
     await Tour.findByIdAndUpdate(tourId, {
       ratingsQuantity: stats[0].nRatings,
-      ratingsAverage: stats[0].avgRatings,
+      ratingsAverage: Math.round(stats[0].avgRatings * 10) / 10,
     });
   } else {
     await Tour.findByIdAndUpdate(tourId, {
@@ -83,7 +83,7 @@ reviewSchema.post(/^findOneAnd/, async function (result) {
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
-    select: 'name',
+    select: 'name photo',
   });
   next();
 });

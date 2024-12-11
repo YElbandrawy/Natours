@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////
 const express = require('express');
-
+const path = require('path');
 //////////////import npm modules///////////////////
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -14,18 +14,26 @@ const globalErrorHandler = require('./constrollers/errorControllers');
 const tourRouter = require('./routes/toursRoutes');
 const userRouter = require('./routes/usersRoutes');
 const reviewRouter = require('./routes/reviewsRoutes');
+const viewRouter = require('./routes/viewsRoutes');
 ///////////////////////////////////////////////////
 const app = express();
+//set pug as our template engine
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 /////////////////////////**Gloubal MiddleWares**////////////////////////////////
 ////remember middlewares are executed in the same order they are in the code////
 
-//1)sets HTTP response headers(for security)
+//serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+//sets HTTP response headers(for security)
 app.use(helmet());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-//2)Limit requests for each IP
+//Limit requests for each IP
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
@@ -50,6 +58,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
