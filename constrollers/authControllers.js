@@ -74,6 +74,18 @@ exports.login = catchAsync(async (req, res, next) => {
   await createSendToken(user._id, 201, res);
 });
 
+exports.logout = async (req, res) => {
+  const cookieOptions = {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  };
+  res.cookie('jwt', 'logedout', cookieOptions);
+
+  res.status(200).json({
+    status: 'success',
+  });
+};
+
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   //get the user based on the psted email
   const user = await User.findOne({ email: req.body.email });
@@ -152,6 +164,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -231,3 +245,31 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   //login the user again
   await createSendToken(user._id, 201, res);
 });
+
+/***********UI Auth. Section**********/
+
+exports.isLogedIn = async (req, res, next) => {
+  try {
+    //check if the user is loged in
+    if (req.cookies.jwt) {
+      //check if the token valid
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+      //check if the user is still exist
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+      //check if the user changed the password
+      if (await currentUser.passwordChangedAfter(decoded.iat)) {
+        return next();
+      }
+      res.locals.user = currentUser;
+    }
+    next();
+  } catch (err) {
+    next();
+  }
+};
