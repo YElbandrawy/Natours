@@ -24,28 +24,48 @@ const handleJsonWebTokenError = () => {
 const handleTokenExpiredError = () => {
   return new AppError('Your token has expired, please Login again!', 401);
 };
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack,
+const sendErrorDev = (err, req, res) => {
+  if (req.originalUrl.startsWith('/api')) {
+    // API end-Points
+    return res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack,
+    });
+  }
+  // rendered website
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong',
+    msg: err.message,
   });
 };
-const sendErrorProd = (err, res) => {
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-  } else {
+const sendErrorProd = (err, req, res) => {
+  if (req.originalUrl.startsWith('/api')) {
+    // API end-Points
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
     console.error('Error💥:', err);
-
-    res.status(err.statusCode).json({
+    return res.status(err.statusCode).json({
       status: err.status,
       message: 'someting went wrong!',
     });
   }
+  // Renderd website
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'someting went wrong',
+      msg: err.message,
+    });
+  }
+  return res.status(err.statusCode).render('error', {
+    title: 'someting went wrong',
+    msg: 'someting went wrong!',
+  });
 };
 
 module.exports = (err, req, res, next) => {
@@ -53,7 +73,7 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
     error.message = err.message;
@@ -75,9 +95,6 @@ module.exports = (err, req, res, next) => {
     if (err.name === 'TokenExpiredError') {
       error = handleTokenExpiredError();
     }
-
-    // console.log('err :', err);
-    // console.log('error :', error);
-    sendErrorProd(error, res);
+    sendErrorProd(err, req, res);
   }
 };
