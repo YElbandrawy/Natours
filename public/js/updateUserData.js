@@ -1,20 +1,26 @@
 import axios from 'axios';
 import { showAlert } from './alerts';
 
-export const updateData = async (name, email) => {
+//type is 'password' or 'data'
+export const updateData = async (data, type) => {
   try {
-    console.log('sending the api request');
+    const url =
+      type === 'password'
+        ? 'http://127.0.0.1:3000/api/v1/users/updatepassword'
+        : 'http://127.0.0.1:3000/api/v1/users/updateme';
     const res = await axios({
       method: 'PATCH',
-      url: 'http://127.0.0.1:3000/api/v1/users/updateme',
-      data: {
-        name,
-        email,
-      },
+      url,
+      data,
     });
     if (res.data.status === 'success') {
       window.setTimeout(() => {
         location.assign('/');
+        if (type === 'password')
+          showAlert(
+            'success',
+            'Password Has changed successfuly, Please log in again'
+          );
       }, 1000);
     }
   } catch (err) {

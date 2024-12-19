@@ -2,6 +2,7 @@ const Tour = require('./../models/toursModel');
 const User = require('./../models/usersModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const { render } = require('pug');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   //load Tours Data
@@ -16,7 +17,9 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 exports.getLogInForm = (req, res) => {
   res.status(200).render('login');
 };
-
+exports.getSignupForm = (req, res) => {
+  res.status(200).render('signup');
+};
 // /tour/:slug
 exports.getTour = catchAsync(async (req, res, next) => {
   //get the tour data (include guides and reviews)

@@ -10,5 +10,7 @@ router.get('/tour/:slug', authControllers.isLogedIn, viewControllers.getTour);
 
 router.get('/login', authControllers.isLogedIn, viewControllers.getLogInForm);
 
+router.get('/signup', authControllers.isLogedIn, viewControllers.getSignupForm);
+
 router.get('/me', authControllers.protect, viewControllers.getMyAccount);
 module.exports = router;

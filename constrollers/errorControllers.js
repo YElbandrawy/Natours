@@ -95,6 +95,6 @@ module.exports = (err, req, res, next) => {
     if (err.name === 'TokenExpiredError') {
       error = handleTokenExpiredError();
     }
-    sendErrorProd(err, req, res);
+    sendErrorProd(error, req, res);
   }
 };
