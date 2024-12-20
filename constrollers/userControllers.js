@@ -2,20 +2,7 @@ const User = require('./../models/usersModel');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const factory = require('./factoryHandler');
-
-////////////////////////////////////////////
-/****************my helpers***************/
-const filterObject = (obj, ...execlude) => {
-  let retObject = JSON.parse(JSON.stringify(obj)); //deep clone the input object
-  const objKeys = Object.keys(retObject);
-  execlude.forEach((el) => {
-    if (objKeys.includes(el)) {
-      delete retObject[el];
-    }
-  });
-  return retObject;
-};
-
+const filterReqBody = require('./../utils/filterReqBody').default;
 ///////////////////////////////////////////
 exports.getAllUsers = factory.getAll(User);
 
@@ -34,15 +21,12 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       )
     );
   }
-
-  const filteredData = filterObject(
-    req.body,
-    'role',
-    '_id',
-    'id',
-    'passwordCreatedAt',
-    'passwordResetToken',
-    'resetTokenExpire'
+  const filteredData = filterReqBody(
+    // user can only change the password through authControllers.updatePassword()
+    req,
+    'name',
+    'email',
+    'photo'
   );
   const updateData = { $set: filteredData };
   const user = await User.findByIdAndUpdate(req.user.id, updateData, {

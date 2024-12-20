@@ -6,17 +6,7 @@ const Review = require('./../models/reviewsModel');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const sendEmail = require('./../utils/email');
-
-const filterReqBody = (req, ...elements) => {
-  let retObject = JSON.parse(JSON.stringify(req.body)); //deep clone the input object
-  const objKeys = Object.keys(retObject);
-  objKeys.forEach((el) => {
-    if (!elements.includes(el)) {
-      delete retObject[el];
-    }
-  });
-  return retObject;
-};
+const filterReqBody = require('./../utils/filterReqBody');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {

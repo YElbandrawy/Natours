@@ -1,6 +1,7 @@
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const APIFeatures = require('./../utils/apiFeatures');
+const filterReqBody = require('./../utils/filterReqBody');
 
 exports.getAll = (Model, populateOptions) =>
   catchAsync(async (req, res, next) => {
@@ -50,7 +51,28 @@ exports.creatOne = (Model) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const updateData = { $set: req.body };
+    //sanitize the user input data
+    const filteredData = filterReqBody(
+      req,
+      'name',
+      'email',
+      'photo',
+      'price',
+      'difficulty',
+      'slug',
+      'duration',
+      'maxGroupSize',
+      'summary',
+      'description',
+      'imageCover',
+      'images',
+      'startDates',
+      'startLocation',
+      'locations',
+      'guides'
+    );
+
+    const updateData = { $set: filteredData };
     const doc = await Model.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,

@@ -36,7 +36,6 @@ export const signup = async (name, email, password, passwordconfirm) => {
     if (res.data.status === 'success') {
       window.setTimeout(() => {
         location.assign('/');
-        showAlert('success', 'Enjooooy🥰');
       }, 3000);
     }
   } catch (err) {
