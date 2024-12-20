@@ -35,7 +35,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  const updateData = filterObject(
+  const filteredData = filterObject(
     req.body,
     'role',
     '_id',
@@ -44,6 +44,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     'passwordResetToken',
     'resetTokenExpire'
   );
+  const updateData = { $set: filteredData };
   const user = await User.findByIdAndUpdate(req.user.id, updateData, {
     new: true,
     runValidators: true,

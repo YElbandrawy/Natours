@@ -44,11 +44,12 @@ if (process.env.NODE_ENV === 'development') {
 }
 //Limit requests for each IP
 const limiter = rateLimit({
-  max: 100,
+  max: 1000,
   windowMs: 60 * 60 * 1000,
   message: 'too much requests rate, try again after 1 Hour😴',
 });
-app.use('/api', limiter);
+//app.use('/api', limiter);
+app.use(limiter);
 
 //Read the data from the request body to req.body
 app.use(express.json({ limit: '10kb' }));

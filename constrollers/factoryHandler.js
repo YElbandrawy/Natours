@@ -50,7 +50,8 @@ exports.creatOne = (Model) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+    const updateData = { $set: req.body };
+    const doc = await Model.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     });

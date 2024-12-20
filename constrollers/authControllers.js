@@ -65,7 +65,9 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('please provide email and password', 400));
   }
   // check if the user exist && chek credentials
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email: { $eq: email } }).select(
+    '+password'
+  );
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or password', 401));
@@ -88,7 +90,7 @@ exports.logout = async (req, res) => {
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   //get the user based on the psted email
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({ email: { $eq: req.body.email } });
   if (!user) {
     return next(new AppError('there is no user with this email', 404));
   }
