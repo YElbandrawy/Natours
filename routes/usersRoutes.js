@@ -17,7 +17,7 @@ router.use(authController.protect);
 router.patch('/updatepassword', authController.updatePassword);
 router.patch(
   '/updateme',
-  userController.enablePhotoUpload,
+  userController.enableUserPhotoUpload,
   userController.resizeUserPhoto,
   userController.updateMe
 );
