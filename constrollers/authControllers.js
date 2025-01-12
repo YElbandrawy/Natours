@@ -5,7 +5,7 @@ const User = require('./../models/usersModel');
 const Review = require('./../models/reviewsModel');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
-const sendEmail = require('./../utils/email');
+const EmailService = require('./../utils/email');
 const filterReqBody = require('./../utils/filterReqBody');
 
 const signToken = (id) => {
@@ -82,7 +82,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   //get the user based on the psted email
   const user = await User.findOne({ email: { $eq: req.body.email } });
   if (!user) {
-    return next(new AppError('there is no user with this email', 404));
+    return next(new AppError('Wrong email 😄', 404));
   }
   // generate the reset token
   const resetToken = await user.creatPasswordRestToken();
@@ -94,13 +94,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   )}/api/v1/users/resetpassword/${resetToken}`;
   const message = `click the following link to reset your password,\n reset password:${resetURL},\n 
   if you didn't forget your password please ignore this E-mail.`;
-
   try {
-    await sendEmail({
-      to: user.email,
-      subject: 'password reset url (valid for 10 min)',
-      message,
-    });
+    await EmailService.sendPasswordResetUrl(user, resetURL);
 
     res.status(201).json({
       status: 'success',
@@ -110,6 +105,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     user.passwordResetToken = undefined;
     user.resetTokenExpire = undefined;
     await user.save({ validateBeforeSave: false });
+    console.dir(error);
     return next(
       new AppError(
         'there was an error sending the email, please try again later!!'

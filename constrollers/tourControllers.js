@@ -16,6 +16,7 @@ const multerFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
 ////////////////////Tours/////////////////////////////////
 exports.enableTourPhotoUpload = upload.fields([
   { name: 'imageCover', maxCount: 1 },
