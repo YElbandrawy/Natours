@@ -12,5 +12,13 @@ router.get('/login', authControllers.isLogedIn, viewControllers.getLogInForm);
 
 router.get('/signup', authControllers.isLogedIn, viewControllers.getSignupForm);
 
+router.get('/resetpassword', viewControllers.getResetpasswordForm);
+
+router.get(
+  '/resetpassword/:token',
+  authControllers.validateResetToken,
+  viewControllers.getResetpasswordForm
+);
+
 router.get('/me', authControllers.protect, viewControllers.getMyAccount);
 module.exports = router;

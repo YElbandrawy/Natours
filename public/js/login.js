@@ -49,8 +49,29 @@ export const logout = async (email, password) => {
       method: 'GET',
       url: 'http://127.0.0.1:3000/api/v1/users/logout',
     });
-    if (res.data.status === 'success') location.reload(true);
+    if (res.data.status === 'success') location.assign('/');
   } catch (err) {
     showAlert('error', 'error loging out try again😅');
+  }
+};
+
+export const forgotPassword = async (email) => {
+  try {
+    showAlert(
+      'success',
+      'Reset link should be sent if this E-mail linked to an account'
+    );
+    const res = await axios({
+      method: 'POST',
+      url: 'http://127.0.0.1:3000/api/v1/users/forgotpassword',
+      data: {
+        email,
+      },
+    });
+  } catch (error) {
+    showAlert(
+      'success',
+      'Reset link should be sent if this E-mail linked to an account'
+    );
   }
 };

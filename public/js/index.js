@@ -1,14 +1,16 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-import { login, signup, logout } from './login';
+import { login, signup, logout, forgotPassword } from './login';
 import { renderMap } from './leaflet';
-import { updateData } from './updateUserData';
+import { updateData, resetPassword } from './updateUserData';
 
 //DOM elements
 const leafletMap = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
 const signupForm = document.querySelector('.form--signup');
+const forgotPasswordform = document.querySelector('.form--forgotPassword');
+const resetPasswordform = document.querySelector('.form--resetPassword');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const updateForm = document.querySelector('.form-user-data');
 const updatePasswordForm = document.querySelector('.form-user-password');
@@ -35,12 +37,6 @@ if (signupForm) {
     signup(name, email, password, passwordconfirm);
   });
 }
-/*{
-    "name":"uosefElbandrawy",
-    "email":"uosef@GMail.com",
-    "password":"pass1234",
-    "passwordconfirm":"pass1234"
-}*/
 
 if (updateForm) {
   updateForm.addEventListener('submit', (e) => {
@@ -75,3 +71,22 @@ if (updatePasswordForm) {
   });
 }
 if (logOutBtn) logOutBtn.addEventListener('click', logout);
+
+if (forgotPasswordform) {
+  forgotPasswordform.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    forgotPassword(email);
+  });
+}
+if (resetPasswordform) {
+  resetPasswordform.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const password = document.getElementById('password').value;
+    const passwordconfirm = document.getElementById('password-confirm').value;
+    const resetToken = window.location.pathname.split('/')[2];
+    console.log(resetToken);
+
+    resetPassword(password, passwordconfirm, resetToken);
+  });
+}

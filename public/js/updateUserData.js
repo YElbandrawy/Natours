@@ -16,12 +16,37 @@ export const updateData = async (data, type) => {
     if (res.data.status === 'success') {
       window.setTimeout(() => {
         location.assign('/');
-        if (type === 'password')
+        if (type === 'password') {
           showAlert(
             'success',
             'Password Has changed successfuly, Please log in again'
           );
+        }
       }, 1000);
+    }
+  } catch (err) {
+    showAlert('error', err.response.data.message);
+  }
+};
+
+export const resetPassword = async (password, passwordconfirm, resetToken) => {
+  try {
+    const res = await axios({
+      method: 'PATCH',
+      url: `http://127.0.0.1:3000/api/v1/users/resetpassword/${resetToken}`,
+      data: {
+        password,
+        passwordconfirm,
+      },
+    });
+    if (res.data.status === 'success') {
+      window.setTimeout(() => {
+        location.assign('/login');
+        showAlert(
+          'success',
+          'Password Has changed successfuly, Please log in again'
+        );
+      }, 2000);
     }
   } catch (err) {
     showAlert('error', err.response.data.message);

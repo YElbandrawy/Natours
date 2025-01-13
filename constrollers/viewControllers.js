@@ -20,6 +20,9 @@ exports.getLogInForm = (req, res) => {
 exports.getSignupForm = (req, res) => {
   res.status(200).render('signup');
 };
+exports.getResetpasswordForm = (req, res) => {
+  res.status(200).render('resetPassword');
+};
 // /tour/:slug
 exports.getTour = catchAsync(async (req, res, next) => {
   //get the tour data (include guides and reviews)

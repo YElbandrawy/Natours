@@ -86,7 +86,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   //get the user based on the psted email
   const user = await User.findOne({ email: { $eq: req.body.email } });
   if (!user) {
-    return next(new AppError('Wrong email 😄', 404));
+    return next(new AppError(' ', 201));
   }
   // generate the reset token
   const resetToken = await user.creatPasswordRestToken();
@@ -96,7 +96,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     //send the reset token to the user
     const resetURL = `${req.protocol}://${req.get(
       'host'
-    )}/api/v1/users/resetpassword/${resetToken}`;
+    )}/resetpassword/${resetToken}`;
     await EmailService.sendPasswordResetUrl(user, resetURL);
 
     res.status(201).json({
@@ -262,5 +262,29 @@ exports.isLogedIn = async (req, res, next) => {
     next();
   } catch (err) {
     next();
+  }
+};
+
+exports.validateResetToken = async (req, res, next) => {
+  try {
+    //get the user based on the token && vertify the token expirtation
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(req.params.token)
+      .digest('hex');
+
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      resetTokenExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return next(new AppError('the User notFound OR the token Expired!', 400));
+    }
+    res.locals.userName = user.name.split(' ')[0];
+
+    next();
+  } catch (err) {
+    return next();
   }
 };
