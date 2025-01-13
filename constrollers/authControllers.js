@@ -45,6 +45,10 @@ exports.signup = catchAsync(async (req, res, next) => {
   );
   const newUser = await User.create(userInfo);
 
+  //send welcome Email to the new user
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  await EmailService.sendWelcomeEmail(newUser, url);
+
   await createSendToken(newUser._id, 201, res);
 });
 
@@ -88,13 +92,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const resetToken = await user.creatPasswordRestToken();
   await user.save({ validateBeforeSave: false });
 
-  //send the reset token to the user
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/resetpassword/${resetToken}`;
-  const message = `click the following link to reset your password,\n reset password:${resetURL},\n 
-  if you didn't forget your password please ignore this E-mail.`;
   try {
+    //send the reset token to the user
+    const resetURL = `${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/users/resetpassword/${resetToken}`;
     await EmailService.sendPasswordResetUrl(user, resetURL);
 
     res.status(201).json({

@@ -1,7 +1,10 @@
+const pug = require('pug');
+const htmlToText = require('html-to-text');
 const nodemailer = require('nodemailer');
 const { MailtrapTransport } = require('mailtrap');
 
 class EmailSender {
+  //creat Transporter and send the Email
   static createTransporter() {
     const platform = process.env.EMAIL_PLATFORM;
     const token = process.env.EMAIL_TOKEN;
@@ -29,37 +32,54 @@ class EmailSender {
   static async sendEmail(options) {
     try {
       const transporter = this.createTransporter();
-      const mailOptions = {
-        from: process.env.SENDEREMAIL,
-        to: options.to,
-        subject: options.subject,
-        text: options.message,
-        html: options.html,
-        category: 'Integration Test',
-        sandbox: process.env.NODE_ENV !== 'production',
-      };
 
-      await transporter.sendMail(mailOptions);
+      options.from = process.env.SENDEREMAIL;
+      options.category = 'Integration Test';
+      options.sandbox = process.env.NODE_ENV !== 'production';
+
+      await transporter.sendMail(options);
     } catch (error) {
       throw new Error(`Failed to send email: ${error.message}`);
     }
   }
 }
 
-class EmailService {
-  static async sendWelcomeEmail(user) {
-    if (!user.email) {
-      throw new Error('Invalid user data: email is required');
-    }
-
-    const options = {
-      to: user.email,
-      subject: 'Welcome to Our Platform!',
-      message: "Thank you for joining our platform. We're excited to have you!",
-      html: "<h1>Welcome!</h1><p>Thank you for joining our platform. We're excited to have you!</p>",
+class EmailFactory {
+  //email content creator
+  constructor(template) {
+    this.template = template;
+  }
+  createContent(emailData) {
+    const html = pug.renderFile(
+      `${__dirname}/../views/emails/${this.template}.pug`,
+      emailData
+    );
+    const content = {
+      subject: emailData.subject,
+      html,
+      text: htmlToText.convert(html),
     };
 
-    await EmailSender.sendEmail(options);
+    return content;
+  }
+}
+
+class EmailService {
+  static async sendWelcomeEmail(user, url) {
+    if (!user.email) {
+      throw new Error(
+        'Invalid parameters: both user email and reset URL are required'
+      );
+    }
+    const emailData = {
+      firstName: user.name.split(' ')[0],
+      subject: 'Welcome to The Natours family',
+      url,
+    };
+    const emailContent = new EmailFactory('welcome').createContent(emailData);
+    emailContent.to = user.email;
+
+    await EmailSender.sendEmail(emailContent);
   }
 
   static async sendPasswordResetUrl(user, url) {
@@ -68,20 +88,17 @@ class EmailService {
         'Invalid parameters: both user email and reset URL are required'
       );
     }
-
-    const options = {
-      to: user.email,
-      subject: 'Password Reset URL (valid for 10 minutes)',
-      message: `Please use this URL to reset your password: ${url}\nThis link will expire in 10 minutes.`,
-      html: `
-        <h2>Password Reset Request</h2>
-        <p>Please click the link below to reset your password:</p>
-        <a href="${url}">Reset Password</a>
-        <p><strong>Note:</strong> This link will expire in 10 minutes.</p>
-      `,
+    const emailData = {
+      firstName: user.name.split(' ')[0],
+      subject: 'Password Reset Url (valid for 10 min)',
+      url,
     };
+    const emailContent = new EmailFactory('passwordReset').createContent(
+      emailData
+    );
+    emailContent.to = user.email;
 
-    await EmailSender.sendEmail(options);
+    await EmailSender.sendEmail(emailContent);
   }
 }
 
