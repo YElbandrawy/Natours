@@ -9,7 +9,7 @@ class EmailSender {
     const platform = process.env.EMAIL_PLATFORM;
     const token = process.env.EMAIL_TOKEN;
 
-    if (!platform || !token) {
+    if (!platform) {
       throw new Error(
         'Missing email configuration. Please check environment variables.'
       );
@@ -23,6 +23,16 @@ class EmailSender {
             testInboxId: 3282889,
           })
         );
+      case 'brevo':
+        console.log('production');
+        return nodemailer.createTransport({
+          host: process.env.BREVO_HOST,
+          port: process.env.BREVO_PORT,
+          auth: {
+            user: process.env.BREVO_LOGIN,
+            pass: process.env.BREVO_PASSWORD,
+          },
+        });
 
       default:
         throw new Error(`Unsupported email platform: ${platform}`);
