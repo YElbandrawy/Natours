@@ -15,6 +15,7 @@ const globalErrorHandler = require('./constrollers/errorControllers');
 const tourRouter = require('./routes/toursRoutes');
 const userRouter = require('./routes/usersRoutes');
 const reviewRouter = require('./routes/reviewsRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewsRoutes');
 ///////////////////////////////////////////////////
 const app = express();
@@ -33,8 +34,21 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      'script-src': ["'self'", 'https://unpkg.com'],
+      'default-src': [
+        "'self'",
+        'https://unpkg.com',
+        'https://js.stripe.com/v3/',
+      ],
+      'script-src': ["'self'", 'https://unpkg.com', 'https://js.stripe.com'],
       'img-src': ["'self'", 'data:', 'https://*.tile.openstreetmap.org'],
+      connectSrc: [
+        "'self'",
+        'http://127.0.0.1:8000',
+        'https://api.stripe.com/',
+        'ws://127.0.0.1:1234', // Add this line to allow WebSocket connections
+        'https://*',
+      ],
+      frameSrc: ["'self'", 'https://js.stripe.com'],
     },
   })
 );
@@ -74,6 +88,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`the rout ${req.originalUrl} dosen't exist`, 404));

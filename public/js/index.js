@@ -4,6 +4,7 @@ import 'regenerator-runtime/runtime';
 import { login, signup, logout, forgotPassword } from './login';
 import { renderMap } from './leaflet';
 import { updateData, resetPassword } from './updateUserData';
+import { bookTour } from './stripe';
 
 //DOM elements
 const leafletMap = document.getElementById('map');
@@ -14,6 +15,8 @@ const resetPasswordform = document.querySelector('.form--resetPassword');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const updateForm = document.querySelector('.form-user-data');
 const updatePasswordForm = document.querySelector('.form-user-password');
+const bookBtn = document.getElementById('book-tour');
+
 if (leafletMap) {
   const locations = JSON.parse(leafletMap.dataset.locations);
   renderMap(locations);
@@ -88,5 +91,12 @@ if (resetPasswordform) {
     console.log(resetToken);
 
     resetPassword(password, passwordconfirm, resetToken);
+  });
+}
+if (bookBtn) {
+  bookBtn.addEventListener('click', (e) => {
+    e.target.textContent = 'processing';
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
   });
 }
