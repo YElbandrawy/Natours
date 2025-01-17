@@ -32,7 +32,6 @@ exports.getTour = catchAsync(async (req, res, next) => {
     select: 'review user rating',
   });
   if (!tour) {
-    console.log('hello No tour');
     return next(new AppError('This Tour not found', 404));
   }
   //render the template

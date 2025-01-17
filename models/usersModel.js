@@ -92,7 +92,6 @@ userSchema.pre(/^find/, function (next) {
 userSchema.methods.passwordChangedAfter = async function (JWTtimeStamp) {
   if (this.passwordCreatedAt) {
     const lastEdit = this.passwordCreatedAt.getTime() / 1000;
-    //console.log(lastEdit, JWTtimeStamp);
     return lastEdit > JWTtimeStamp;
   }
   //false means it hasn't been modified after the token has been issued

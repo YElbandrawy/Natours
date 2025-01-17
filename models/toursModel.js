@@ -140,12 +140,6 @@ tourSchema.pre(/^find/, function (next) {
   });
   next();
 });
-//Query MiddleWare: runs after .^find
-tourSchema.post(/^find/, function (docs, next) {
-  // "this" refere to the Query
-  console.log(`the query took ${Date.now() - this.start} (ms)`);
-  next();
-});
 
 //Aggregation MiddleWare: runs before aggregation
 // tourSchema.pre('aggregate', function (next) {

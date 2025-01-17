@@ -24,7 +24,6 @@ class EmailSender {
           })
         );
       case 'brevo':
-        console.log('production');
         return nodemailer.createTransport({
           host: process.env.BREVO_HOST,
           port: process.env.BREVO_PORT,

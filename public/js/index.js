@@ -88,8 +88,6 @@ if (resetPasswordform) {
     const password = document.getElementById('password').value;
     const passwordconfirm = document.getElementById('password-confirm').value;
     const resetToken = window.location.pathname.split('/')[2];
-    console.log(resetToken);
-
     resetPassword(password, passwordconfirm, resetToken);
   });
 }

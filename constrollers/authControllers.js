@@ -209,8 +209,6 @@ exports.restrictToAuthor = catchAsync(async (req, res, next) => {
   }
   const review = await Review.findById(req.params.id);
   const reviewAuthor = review.user._id.toString();
-  // console.log(review.user._id.toString());
-  // console.log(req.user.id);
   if (!(reviewAuthor === req.user.id)) {
     return next(
       new AppError('only the Author can edit or delete his review😄', 403)

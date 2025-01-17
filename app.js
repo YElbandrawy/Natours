@@ -9,6 +9,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 ////////////import Our modules/////////////////////
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./constrollers/errorControllers');
@@ -78,6 +79,8 @@ app.use(xss());
 
 //sanitize the user input data against Parameter Pollution
 app.use(hpp({ whitelist: ['duration'] }));
+
+app.use(compression());
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
