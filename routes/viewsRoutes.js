@@ -27,4 +27,9 @@ router.get(
 );
 
 router.get('/me', authControllers.protect, viewControllers.getMyAccount);
+router.get(
+  '/my-bookings',
+  authControllers.protect,
+  viewControllers.getMyBookings
+);
 module.exports = router;
