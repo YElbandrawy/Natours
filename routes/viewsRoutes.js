@@ -3,8 +3,14 @@ const router = express.Router();
 
 const viewControllers = require('../constrollers/viewControllers');
 const authControllers = require('../constrollers/authControllers');
+const bookingControllers = require('../constrollers/bookingControllers');
 
-router.get('/', authControllers.isLogedIn, viewControllers.getOverview);
+router.get(
+  '/',
+  bookingControllers.createBookingCheckout, //TEMPORARY : NOT SECURE : Remove in deployment
+  authControllers.isLogedIn,
+  viewControllers.getOverview
+);
 
 router.get('/tour/:slug', authControllers.isLogedIn, viewControllers.getTour);
 
