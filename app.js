@@ -10,6 +10,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 ////////////import Our modules/////////////////////
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./constrollers/errorControllers');
@@ -26,6 +27,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 /////////////////////////**Gloubal MiddleWares**////////////////////////////////
 ////remember middlewares are executed in the same order they are in the code////
+
+//Enable CORS
+app.use(cors());
+app.options('*', cors());
 
 //serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -62,6 +67,7 @@ const limiter = rateLimit({
   max: 1000,
   windowMs: 60 * 60 * 1000,
   message: 'too much requests rate, try again after 1 Hour😴',
+  validate: { xForwardedForHeader: false },
 });
 //app.use('/api', limiter);
 app.use(limiter);

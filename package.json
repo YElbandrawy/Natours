@@ -47,6 +47,7 @@
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
+    "cors": "^2.8.5",
     "esbuild": "^0.24.0"
   }
 }
