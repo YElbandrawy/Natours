@@ -6,7 +6,7 @@ export const bookTour = async (tourId) => {
   //get checkout session
   const session = await axios({
     method: 'POST',
-    url: `/api/v1/bookings/checkout-session/${tourId}`,
+    url: `https://natours-uosef.up.railway.app/api/v1/bookings/checkout-session/${tourId}`,
   });
   //create checkout form
   await stripe.redirectToCheckout({

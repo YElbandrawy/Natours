@@ -5,7 +5,7 @@ export const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: '/api/v1/users/login',
+      url: 'https://natours-uosef.up.railway.app/api/v1/users/login',
       data: {
         email,
         password,
@@ -25,7 +25,7 @@ export const signup = async (name, email, password, passwordconfirm) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: '/api/v1/users/signup',
+      url: 'https://natours-uosef.up.railway.app/api/v1/users/signup',
       data: {
         name,
         email,
@@ -47,7 +47,7 @@ export const logout = async (email, password) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: '/api/v1/users/logout',
+      url: 'https://natours-uosef.up.railway.app/api/v1/users/logout',
     });
     if (res.data.status === 'success') location.assign('/');
   } catch (err) {
@@ -63,7 +63,7 @@ export const forgotPassword = async (email) => {
     );
     const res = await axios({
       method: 'POST',
-      url: '/api/v1/users/forgotpassword',
+      url: 'https://natours-uosef.up.railway.app/api/v1/users/forgotpassword',
       data: {
         email,
       },
