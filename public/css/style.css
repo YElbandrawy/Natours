@@ -1385,35 +1385,66 @@ body {
     grid-template-columns: 1fr;
     grid-gap: 4rem;
   }
-
   .header {
-    padding: 0 3rem;
-    flex-direction: column;
+    padding: 1rem 2rem;
     height: auto;
-    padding: 2rem;
+    background-color: #444;
   }
 
   .header__logo {
-    margin-bottom: 2rem;
+    order: 0; /* Reset the order */
+    margin: 0;
+    text-align: center;
+  }
+
+  .header__logo img {
+    height: 3.5rem;
   }
 
   .nav {
     width: 100%;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .nav--tours,
-  .nav--user {
-    flex: none;
-    width: 100%;
+    display: flex;
     justify-content: center;
-    margin: 1rem 0;
+    margin: 0;
   }
 
+  .nav--tours {
+    order: -1; /* Move All tours to top */
+  }
+
+  .nav--user {
+    order: 1; /* Move user nav to bottom */
+  }
+
+  /* Remove any extra spacing between nav elements */
   .nav__el:not(:last-child) {
-    margin-right: 0;
-    margin-bottom: 1.5rem;
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+
+  /* Adjust the spacing and size of nav elements */
+  .nav__el,
+  .nav__el:link,
+  .nav__el:visited {
+    font-size: 1.4rem;
+    padding: 0.5rem 1rem;
+  }
+
+  /* Ensure proper alignment of user image and name */
+  .nav__el .nav__user-img {
+    height: 3.5rem;
+    width: 3.5rem;
+    margin-right: 0.5rem;
+  }
+
+  /* Compact spacing for the entire header */
+  .header > * {
+    margin: 0.5rem 0;
+  }
+
+  /* Special styling for the CTA button */
+  .nav__el--cta {
+    padding: 0.5rem 1.5rem;
   }
 
   .user-view {
@@ -1459,6 +1490,30 @@ body {
 
   .main {
     padding: 4rem 2rem;
+  }
+  .header {
+    padding: 1rem;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .nav--tours,
+  .nav--user {
+    justify-content: center;
+  }
+
+  .nav__el,
+  .nav__el:link,
+  .nav__el:visited {
+    font-size: 1.3rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .header__logo img {
+    height: 3rem;
   }
 
   .heading-primary {
@@ -1509,5 +1564,22 @@ body {
 
   .nav__search-input:focus {
     width: 20rem;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .nav__el,
+  .nav__el:link,
+  .nav__el:visited {
+    font-size: 1.3rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .header__logo img {
+    height: 2.5rem;
   }
 }
