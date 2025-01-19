@@ -82,12 +82,12 @@ Natours is a feature-rich, high-performance web application for booking nature t
    - Development Mode:
 
      ```bash
-     npm run dev
+     npm start
      ```
 
    - Production Mode:
      ```bash
-     npm start
+     npm start:prod
      ```
 
 5. **Access the Application**
