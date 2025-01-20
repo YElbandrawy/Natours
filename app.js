@@ -18,6 +18,7 @@ const tourRouter = require('./routes/toursRoutes');
 const userRouter = require('./routes/usersRoutes');
 const reviewRouter = require('./routes/reviewsRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const bookingControllers = require('./constrollers/bookingControllers');
 const viewRouter = require('./routes/viewsRoutes');
 ///////////////////////////////////////////////////
 const app = express();
@@ -71,6 +72,12 @@ const limiter = rateLimit({
 });
 //app.use('/api', limiter);
 app.use(limiter);
+
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingControllers.webhookCheckout
+);
 
 //Read the data from the request body to req.body
 app.use(express.json({ limit: '10kb' }));
