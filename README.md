@@ -10,6 +10,7 @@ Natours is a feature-rich, high-performance web application for booking tours, b
 - [Usage](#usage)
 - [Project Structure](#project-structure)
 - [API Documentation](#api-documentation)
+- [Data models Documentation](#data-models-documentation)
 - [Contact the Author](#contact-the-author)
 
 ---
@@ -183,6 +184,10 @@ Natours/
 ## API Documentation
 
 **[documentation🔗](https://documenter.getpostman.com/view/38019494/2sAYQcEA1R)**
+
+## Data models Documentation
+
+**[models/Readme.md](models/Readme.md)**
 
 ## Contact the Author
 
